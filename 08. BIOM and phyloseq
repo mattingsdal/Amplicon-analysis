@@ -1,0 +1,12 @@
+R
+library(phyloseq)
+res=import_biom("COI_rare_otu_table.biom")
+
+rank_names(res)
+
+plot_bar(res,fill="Rank6",title="all taxa")
+
+top20 <- names(sort(taxa_sums(res), decreasing=TRUE))[1:20]
+ps.top20 <- transform_sample_counts(res, function(OTU) OTU/sum(OTU))
+ps.top20 <- prune_taxa(top20, ps.top20)
+plot_bar(ps.top20,fill="Rank2",title="Top 20 OTU")
