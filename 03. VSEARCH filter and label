@@ -1,0 +1,24 @@
+###########################
+#### FILTER AND LABEL. replicate this for each COI and 18S
+###########################
+
+# Setting up folders
+
+for f in `seq 1 8`;
+do
+
+
+# The relabel command is used here to add qiime labels to the fasta headers.
+  vsearch --fastq_filter $f.18S.merged.filter.fastq \
+    --fastaout ${f}_filtered.fasta \
+    --fastq_maxee 0.1 \
+    --relabel site${f}_18S_
+
+echo Copying and compressing
+cat ${f}_filtered.fasta | pigz -c > ${f}_filtered.fasta.gz
+
+done
+
+rm *fastq
+cat 1_filtered.fasta.gz 2_filtered.fasta.gz 3_filtered.fasta.gz 4_filtered.fasta.gz 5_filtered.fasta.gz 6_filtered.fasta.gz 7_filtered.fasta.gz 8_filtered.fasta.gz >all_filtered.fasta.gz
+
