@@ -1,0 +1,29 @@
+###########################
+#### DEREPLICATE AND CHECK FOR CHIMERAS
+###########################
+
+vsearch --threads 10 \
+    --derep_fulllength all_filtered.fasta.gz \
+    --minuniquesize 2 \
+    --sizein \
+    --sizeout \
+    --fasta_width 0 \
+    --uc all.derep.uc \
+    --output seqs.derep.mc2.fna --relabel_sha1 --relabel_keep
+    
+
+### denovo chimeras
+vsearch --uchime_denovo seqs.derep.mc2.fna \
+--threads 10 --strand plus --sizein --sizeout --fasta_width 0 \
+--nonchimeras seqs.checked_denovo.fna \
+--log seqs.checked_denovo.log 
+
+
+## check denovo removed sequences agains ref chimers
+vsearch --threads 10 \
+    --uchime_ref seqs.checked_denovo.fna \
+    --db ~/projects/slettan2/180406_M01132.Project_Slettan-amplicon1-2018-02-22/BOLD_Calanoida/calanoida2.fasta \
+    --sizein \
+    --sizeout \
+    --fasta_width 0 \
+    --nonchimeras seqs.checked_denovo_db.fna 
