@@ -1,0 +1,27 @@
+### Preparing SILVA and BOLD databases for QIIME
+wget https://www.arb-silva.de/fileadmin/silva_databases/release_132/Exports/SILVA_132_SSURef_tax_silva_full_align_trunc.fasta.gz
+gunzip SILVA_132_SSURef_tax_silva_full_align_trunc.fasta.gz
+
+# extract Eukaryotes
+/usit/abel/u1/mortema/software/grepfasta/grepfasta.pl -p="Eukaryota" SILVA_132_SSURef_Nr99_tax_silva.fasta >SILVA_132_SSURef_tax_silva_trunc_Eukaryota.fasta
+/usit/abel/u1/mortema/software/grepfasta/grepfasta.pl -p="Metazoa" SILVA_132_SSURef_tax_silva_trunc_Eukaryota.fasta >SILVA_132_SSURef_tax_silva_trunc_Metazoa.fasta
+
+# SILVA_132_SSURef_tax_silva_trunc_Metazoa.fasta
+
+# replace U with T
+sed '/^[^>]/ y/uU/tT/' SILVA_132_SSURef_tax_silva_trunc_Metazoa.fasta > thymine.fasta 
+sed 's/;/:/g' thymine.fasta >tmp
+sed 's/Eukaryota:Opisthokonta:Holozoa://g' tmp >tmp2
+sed 's/ Metazoa/;tax=d:Metazoa/g' tmp2 >tmp3
+sed 's/\(.*\):/\1,s:/' tmp3>tmp4
+sed 's/ /_/g' tmp4>tmp5
+sed 's/:/,p:/4' tmp5>tmp6
+sed 's/:/,c:/5' tmp6>tmp7
+
+
+sed 's/:/,c:/5' tmp4>tmp5
+sed 's/:/,o:/6' tmp5>tmp6
+sed 's/:/,f:/7' tmp6>tmp7
+
+vsearch --sintax rep_set_relabel.fasta --db /usit/abel/u1/mortema/projects/slettan2/180406_M01132.Project_Slettan-amplicon1-2018-02-22/SILVA/tmp7 --tabbedout test
+
