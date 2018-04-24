@@ -1,0 +1,40 @@
+###########################
+#### JOIN and CUT
+#### https://github.com/pnnl/bernstein-2017-productivity-and-diversity-2/blob/a335610f7223d5b700a664a2aacf6afe221e94a9/analysis/18S_scripts/1_join.sh
+###########################
+
+# Setting up folders
+homedir=/usit/abel/u1/mortema/projects/slettan2/180406_M01132.Project_Slettan-amplicon1-2018-02-22
+input=/usit/abel/u1/mortema/projects/slettan2/180406_M01132.Project_Slettan-amplicon1-2018-02-22/fastq
+output=/usit/abel/u1/mortema/projects/slettan2/180406_M01132.Project_Slettan-amplicon1-2018-02-22/pipeline_18S
+
+module load vsearch
+
+THREADS=10
+VSEARCH=/cluster/software/vsearch/bin/vsearch
+
+
+cd $input
+for f in *_R1_*.fastq; do
+
+    r=$(sed -e "s/_R1_/_R2_/" <<< "$f")
+    s=$(cut -d_ -f1 <<< "$f")
+
+    echo
+    echo ====================================
+    echo Processing sample $s
+    echo ====================================
+
+    $VSEARCH --threads $THREADS \
+        --fastq_mergepairs $f \
+        --reverse $r \
+        --fastq_allowmergestagger \
+        --fastq_minovlen 40 \
+        --fastq_maxdiffs 10 \
+        --fastqout $output/$s.merged.fastq \
+     # Commands to demultiplex and remove tags and primers                       
+     # using e.g. cutadapt may be added here.  
+    
+     $VSEARCH --fastx_filter $output/$s.merged.fastq --fastq_stripleft 12 --fastq_stripright 12 --fastqout $output/$s.merged.filter.fastq
+
+done
