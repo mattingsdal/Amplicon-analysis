@@ -1,0 +1,9 @@
+#### see file for formating vsearch and SILVA
+vsearch --sintax rep_set_relabel.fasta --db /usit/abel/u1/mortema/projects/slettan2/180406_M01132.Project_Slettan-amplicon1-2018-02-22/SILVA/tmp7 --tabbedout test --sintax_cutoff 0.1
+awk '{print $1"\t"$4}' test>test2
+
+### hack test to be qiime compatable
+sed 's/:/;/g' test2 | sed 's/,//g'>test3
+## make otu and tax biom
+make_otu_table.py -i seq_otus.txt -t test3 -o otu_table.biom
+single_rarefaction.py -i otu_table.biom -d 300000 -o rare_otu_table.biom
