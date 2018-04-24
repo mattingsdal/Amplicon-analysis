@@ -1,4 +1,8 @@
-### Preparing SILVA and BOLD databases for QIIME
+###############
+############### SILVA
+###############
+
+### Preparing SILVA databases for vsearch/QIIME
 wget https://www.arb-silva.de/fileadmin/silva_databases/release_132/Exports/SILVA_132_SSURef_tax_silva_full_align_trunc.fasta.gz
 gunzip SILVA_132_SSURef_tax_silva_full_align_trunc.fasta.gz
 
@@ -9,10 +13,10 @@ gunzip SILVA_132_SSURef_tax_silva_full_align_trunc.fasta.gz
 # SILVA_132_SSURef_tax_silva_trunc_Metazoa.fasta
 
 # replace U with T
-sed '/^[^>]/ y/uU/tT/' SILVA_132_SSURef_tax_silva_trunc_Metazoa.fasta > thymine.fasta 
+sed '/^[^>]/ y/uU/tT/' SILVA_132_SSURef_tax_silva_trunc_Eukaryota.fasta > thymine.fasta 
 sed 's/;/:/g' thymine.fasta >tmp
-sed 's/Eukaryota:Opisthokonta:Holozoa://g' tmp >tmp2
-sed 's/ Metazoa/;tax=d:Metazoa/g' tmp2 >tmp3
+#sed 's/Eukaryota:Opisthokonta:Holozoa://g' tmp >tmp2
+sed 's/ Eukaryota/;tax=d:Eukaryota/g' tmp >tmp3
 sed 's/\(.*\):/\1,s:/' tmp3>tmp4
 sed 's/ /_/g' tmp4>tmp5
 sed 's/:/,p:/4' tmp5>tmp6
@@ -25,3 +29,19 @@ sed 's/:/,f:/7' tmp6>tmp7
 
 vsearch --sintax rep_set_relabel.fasta --db /usit/abel/u1/mortema/projects/slettan2/180406_M01132.Project_Slettan-amplicon1-2018-02-22/SILVA/tmp7 --tabbedout test
 
+###############
+############### BOLD
+###############
+
+sed 's/-//g' fasta_Hexanaupli.fas >tmp
+sed 's/|COI.*//' tmp >tmp2
+sed 's/|/;tax=s:/' tmp2 >tmp3
+sed 's/ /_/g' tmp3>tmp4
+
+vsearch --sintax rep_set_relabel.fasta --db /usit/abel/u1/mortema/projects/slettan2/180406_M01132.Project_Slettan-amplicon1-2018-02-22/BOLD/tmp4 --tabbedout test --sintax_cutoff 0.8
+awk '{print $1"\t"$4}' test >test2
+
+sed 's/:/;/g' test2 | sed 's/,//g'>test3
+## make otu and tax biom
+make_otu_table.py -i seq_otus.txt -t test3 -o otu_table.biom
+single_rarefaction.py -i otu_table.biom -d 150000 -o COI_rare_otu_table.biom
