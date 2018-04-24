@@ -31,7 +31,8 @@ vsearch --sintax rep_set_relabel.fasta --db /usit/abel/u1/mortema/projects/slett
 
 ###############
 ############### BOLD
-###############
+############### wget -O Gastropoda.fa http://www.boldsystems.org/index.php/API_Public/sequence?taxon=Gastropoda&marker=COI
+
 
 sed 's/-//g' fasta_Hexanaupli.fas >tmp
 sed 's/|COI.*//' tmp >tmp2
