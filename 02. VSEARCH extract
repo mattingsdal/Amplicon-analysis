@@ -1,0 +1,16 @@
+###########################
+#### extract COI and 18S using sequence lengths
+#### COI = 364 and 366
+#### 18S 402-408
+###########################
+
+mkdir 18S
+mkdir COI
+
+for f in `seq 1 8`;
+do
+
+ $VSEARCH --threads $THREADS --fastq_filter $f.merged.filter.fastq --fastq_minlen 364 --fastq_maxlen 366 --fastqout COI/$f.COI.merged.filter.fastq
+ $VSEARCH --threads $THREADS --fastq_filter $f.merged.filter.fastq --fastq_minlen 402 --fastq_maxlen 408 --fastqout 18S/$f.18S.merged.filter.fastq
+
+done
