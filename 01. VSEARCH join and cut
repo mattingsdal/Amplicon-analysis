@@ -30,6 +30,6 @@ for f in *_R1_*.fastq; do
      # Commands to demultiplex and remove tags and primers                       
      # using e.g. cutadapt may be added here.  
     
-     $VSEARCH --fastx_filter $output/$s.merged.fastq --fastq_stripleft 12 --fastq_stripright 12 --fastqout $output/$s.merged.filter.fastq
+     vsearch --fastx_filter $output/$s.merged.fastq --fastq_stripleft 12 --fastq_stripright 12 --fastqout $output/$s.merged.filter.fastq
 
 done
