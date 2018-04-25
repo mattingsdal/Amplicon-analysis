@@ -33,3 +33,11 @@ for f in *_R1_*.fastq; do
      vsearch --fastx_filter $output/$s.merged.fastq --fastq_stripleft 12 --fastq_stripright 12 --fastqout $output/$s.merged.filter.fastq
 
 done
+
+### count read lengths, make histogram
+
+for f in `seq 1 8`;
+do
+awk 'NR%4 == 2 {lengths[length($0)]++} END {for (l in lengths) {print l, lengths[l]}}' $f.merged.filter.fastq | sort -V >$f.length
+done
+
