@@ -4,14 +4,9 @@
 ###########################
 
 # Setting up folders
-homedir=/usit/abel/u1/mortema/projects/slettan2/180406_M01132.Project_Slettan-amplicon1-2018-02-22
-input=/usit/abel/u1/mortema/projects/slettan2/180406_M01132.Project_Slettan-amplicon1-2018-02-22/fastq
-output=/usit/abel/u1/mortema/projects/slettan2/180406_M01132.Project_Slettan-amplicon1-2018-02-22/pipeline_18S
-
-module load vsearch
 
 THREADS=10
-VSEARCH=/cluster/software/vsearch/bin/vsearch
+
 
 
 cd $input
@@ -25,7 +20,7 @@ for f in *_R1_*.fastq; do
     echo Processing sample $s
     echo ====================================
 
-    $VSEARCH --threads $THREADS \
+    vsearch --threads $THREADS \
         --fastq_mergepairs $f \
         --reverse $r \
         --fastq_allowmergestagger \
