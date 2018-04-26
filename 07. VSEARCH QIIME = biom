@@ -4,6 +4,15 @@ awk '{print $1"\t"$4}' test>test2
 
 ### hack test to be qiime compatable
 sed 's/:/;/g' test2 | sed 's/,//g'>test3
+
 ## make otu and tax biom
 make_otu_table.py -i seq_otus.txt -t test3 -o otu_table.biom
+
+# sumamrize table 
+biom summarize-table -i otu_table.biom
+
+# weight each samples 
 single_rarefaction.py -i otu_table.biom -d 300000 -o rare_otu_table.biom
+
+# make text file
+biom convert -i rare_otu_table.biom -o rare_otu_table.txt --to-tsv
